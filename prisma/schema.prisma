@@ -20,6 +20,7 @@ model Income {
   id         Int      @id @default(autoincrement())
   name       String   @unique
   price      Decimal  @default(0) @db.Decimal(12, 2)
+  totalPrice Decimal  @default(0) @db.Decimal(12, 2)
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
   createdAt  DateTime @default(now())
@@ -30,6 +31,7 @@ model Expense {
   id         Int      @id @default(autoincrement())
   name       String   @unique
   price      Decimal  @default(0) @db.Decimal(12, 2)
+  totalPrice Decimal  @default(0) @db.Decimal(12, 2)
   category   Category @relation(fields: [categoryId], references: [id])
   categoryId Int
   createdAt  DateTime @default(now())
