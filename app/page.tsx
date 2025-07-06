@@ -1,87 +1,62 @@
 import {
   getIncomes,
   getExpenses,
-  getCategories
+  getCategories,
+  getTotalIncomes,
+  getTotalExpenses,
+  getIncomeCategories,
+  getExpenseCategories
 } from '@/lib/controllers/dbController'
 
 async function Home () {
   const incomes = await getIncomes()
   const expenses = await getExpenses()
   const categories = await getCategories()
+  const totalIncome = await getTotalIncomes()
+  const totalExpenses = await getTotalExpenses()
+  const incomeCategories = await getIncomeCategories()
+  const expenseCategories = await getExpenseCategories()
+
+  const balance = totalIncome.totalPrice - totalExpenses.totalPrice
 
   return (
     <div className='container mx-auto p-4'>
-      <h1 className='text-2xl font-bold mb-4'>Financial Dashboard</h1>
-
-      <h2 className='text-xl font-semibold mb-2'>Categories</h2>
-      <table className='w-full mb-6 border-collapse border border-gray-300'>
-        <thead>
-          <tr className='bg-gray-100'>
-            <th className='border border-gray-300 p-2'>ID</th>
-            <th className='border border-gray-300 p-2'>Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map(category => (
-            <tr key={category.id}>
-              <td className='border border-gray-300 p-2'>{category.id}</td>
-              <td className='border border-gray-300 p-2'>{category.name}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2 className='text-xl font-semibold mb-2'>Incomes</h2>
-      <table className='w-full mb-6 border-collapse border border-gray-300'>
-        <thead>
-          <tr className='bg-gray-100'>
-            <th className='border border-gray-300 p-2'>ID</th>
-            <th className='border border-gray-300 p-2'>Name</th>
-            <th className='border border-gray-300 p-2'>Price</th>
-            <th className='border border-gray-300 p-2'>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {incomes.map(income => (
-            <tr key={income.id}>
-              <td className='border border-gray-300 p-2'>{income.id}</td>
-              <td className='border border-gray-300 p-2'>{income.name}</td>
-              <td className='border border-gray-300 p-2'>
-                ${income.price.toString()}
-              </td>
-              <td className='border border-gray-300 p-2'>
-                {income.category.name}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h2 className='text-xl font-semibold mb-2'>Expenses</h2>
-      <table className='w-full border-collapse border border-gray-300'>
-        <thead>
-          <tr className='bg-gray-100'>
-            <th className='border border-gray-300 p-2'>ID</th>
-            <th className='border border-gray-300 p-2'>Name</th>
-            <th className='border border-gray-300 p-2'>Price</th>
-            <th className='border border-gray-300 p-2'>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {expenses.map(expense => (
-            <tr key={expense.id}>
-              <td className='border border-gray-300 p-2'>{expense.id}</td>
-              <td className='border border-gray-300 p-2'>{expense.name}</td>
-              <td className='border border-gray-300 p-2'>
-                ${expense.price.toString()}
-              </td>
-              <td className='border border-gray-300 p-2'>
+      <div className='grid grid-cols-2 gap-4 mb-4'>
+        <div className='bg-neutral-white p-4 rounded'>
+          <h2 className='text-xl font-bold mb-2'>Balance</h2>
+          <div className='text-lg text-right'>€{balance.toFixed(2)}</div>
+          <div className='flex justify-between items-center'>
+            <span>Income</span>
+            <span>€{totalIncome.totalPrice.toFixed(2)}</span>
+          </div>
+          <div className='flex justify-between items-center'>
+            <span>Spending</span>
+            <span>€{totalExpenses.totalPrice.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+      <div className='grid grid-cols-2 gap-4 mb-4'>
+        <div className='bg-neutral-white p-4'>
+          <div className='flex justify-start'>
+            <h1 className='text-2xl font-bold'>Incomes</h1>
+          </div>
+          <div className='flex justify-start mt-4'>
+            <h2 className='text-lg font-semibold'>Categories</h2>
+          </div>
+          <ul className='mt-2 w-full'>
+            {expenses.map(expense => (
+              <li className='w-full flex flex-col items-start' key={expense.id}>
                 {expense.category.name}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                <ul className='w-full'>
+                  <li className='w-full flex flex-col items-end'>
+                    {expense.price.toFixed(2)}
+                  </li>
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   )
 }
